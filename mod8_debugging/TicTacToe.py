@@ -9,7 +9,7 @@ class MoveType(Enum):
     top_right = (0,2)
     
     middle_left = (1,0)
-    middle_center = (3,1)
+    middle_center = (1,1)
     middle_right = (1,2)
 
     bottom_left = (2,0)
@@ -32,11 +32,11 @@ class TicTacToe:
         """Init instance of Tic Tac Toe."""
         self.board = np.zeros([3,3])
         self.valid_moves = [move.value for move in MoveType]
-        self.print_instrutions()
+        self.print_instructions()
     
     def print_instructions(self):
         """Print instructions."""
-        valid_moves_str = ', '.join([MoveType(moev).name for move in self.valid_moves])
+        valid_moves_str = ', '.join([MoveType(move).name for move in self.valid_moves])
         print(f"Welcome to Tic Tac Toe! \nUser input should be one of the moves below: \n{valid_moves_str}")
     
     def __update_valid_moves(self):
@@ -64,7 +64,7 @@ class TicTacToe:
             print("Please enter a valid move.")
             self.__user_take_turn()
         
-    def __computer_take_turn():
+    def __computer_take_turn(self):
         """Automate the computer's turn."""
         move_index = random.choice(self.valid_moves)
         self.board[move_index] = CellStatus.COMPUTER.value
@@ -79,7 +79,7 @@ class TicTacToe:
             end_game, message = self.__check_end_conditions("USER")
             if end_game:
                 print(message)
-            
+                break
 
             self.__computer_take_turn()
             end_game, message = self.__check_end_conditions("COMPUTER")
@@ -95,9 +95,9 @@ class TicTacToe:
         unique_cols, col_counts = np.unique(player_cols, return_counts=True)
 
         # check win conditions
-        row_win = any(row_counts >=3)
-        col_win = any(col_counts >=3)
-        diag_win = all(np.diagonal(self.board) == CellStatus["USER"].value) | all(np.diagonal(np.fliplr(self.board)) == CellStatus["USER"].value)
+        row_win = any(count == 3 for count in row_counts)
+        col_win = any(count == 3 for count in col_counts)
+        diag_win = all(np.diagonal(self.board) == CellStatus[player].value) or all(np.diagonal(np.fliplr(self.board)) == CellStatus[player].value)
         end_game = any([row_win, col_win, diag_win])
 
         # if player has won
